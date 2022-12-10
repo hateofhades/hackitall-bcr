@@ -25,7 +25,7 @@
     </v-app-bar>
 
     <v-row justify="center">
-      <v-col cols="10">
+      <v-col :cols="windowWidth < 700?'12':'8'">
         <v-stepper v-model="e1" class="mt-4" elevation="4">
           <v-stepper-header>
             <v-stepper-step :complete="e1 > 1" step="1">
@@ -53,26 +53,33 @@
             <v-divider></v-divider>
 
             <v-stepper-step step="5">
-              Completeaza datele de contact
+              Sumarul programarii
             </v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-items>
             <v-stepper-content step="1">
-              <v-card class="mb-10" height="200px" elevation="0">
-                <v-list-item-group
-                  v-model="settings"
-                  multiple
-                  active-class=""
-                  rounded
-                >
-                  <v-list rounded>
-                    <v-list-item v-for="optiune in optiuni" v-bind:key="optiune.name" :value="optiune">
+              <v-card elevation="0">
+                <v-list-item-group v-model="settings" multiple active-class="" dense>
+                  <v-list
+                    rounded
+                    class="ma-0"
+                    style="
+                      max-width: 100%;
+                      white-space: normal;
+                      word-wrap: break-word;
+                    "
+                  >
+                    <v-list-item
+                      v-for="optiune in optiuni"
+                      v-bind:key="optiune.name"
+                      :value="optiune"
+                    >
                       <template v-slot:default="{ active }">
                         <v-list-item-content>
-                          <v-list-item-title 
-                            >{{optiune.name}}</v-list-item-title
-                          >
+                          <v-list-item-title style="word-wrap: break-word">{{
+                            optiune.name
+                          }}</v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-action>
                           <v-checkbox
@@ -129,33 +136,63 @@ export default {
     e1: 1,
     optiuni: [
       {
-        name: "Depunere sau retragere bani"
-      }, 
-      {
-        name: "Plata rata credit"
+        name: "Depunere sau retragere bani",
       },
       {
-        name: "Operatiune fara numerar"
+        name: "Plata rata credit",
       },
       {
-        name: "Deschidere cont"
-      }
+        name: "Operatiune fara numerar",
+      },
+      {
+        name: "Deschidere cont curent",
+      },
+      {
+        name: "Deschidere cont minori",
+      },
+      {
+        name: "Deschidere cont refugiati",
+      },
+      {
+        name: "Suport utilizare aplicatie George",
+      },
+      {
+        name: "Diagnostic financiar gratuit",
+      },
+      {
+        name: "Credit de nevoi personale",
+      },
+      {
+        name: "Credit ipotecar",
+      },
+      {
+        name: "Economisire",
+      },
     ],
-    settings: {}
+    settings: {},
+    windowWidth: window.innerWidth
   }),
   methods: {
     goBack() {
       this.e1--;
-      console.log(this.settings)
+      console.log(this.settings);
     },
+    onResize() {
+      this.windowWidth = window.innerWidth;
+    }
   },
   watch: {
     settings(newSettings) {
-      if(newSettings.length > 1) {
+      if (newSettings.length > 1) {
         this.settings = [];
         this.settings.push(newSettings[1]);
       }
-    }
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize)
+    });
   }
 };
 </script>
