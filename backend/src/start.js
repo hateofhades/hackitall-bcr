@@ -5,6 +5,7 @@ const ObjectId = require("mongodb").ObjectID;
 const CONNECTION_URL = "mongodb+srv://dbTest:parolamea123@cluster0.jnezpyt.mongodb.net/?retryWrites=true&w=majority";
 const DATABASE_NAME = "bcr";
 const nodemailer = require('nodemailer');
+const cors = require('cors');
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -21,6 +22,11 @@ const transporter = nodemailer.createTransport({
 var app = Express();
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
+app.use(cors(
+	{
+		origin: 'http://localhost:8080'
+	}
+));
 var database, collection, collectionAppo;
 
 function getIcalObjectInstance(starttime, endtime, location, url)
@@ -43,7 +49,7 @@ function getIcalObjectInstance(starttime, endtime, location, url)
 	return cal;
 }
 
-app.listen(5000, () => {
+app.listen(5001, () => {
     MongoClient.connect(CONNECTION_URL, { useNewUrlParser: true }, (error, client) => {
         if(error) {
             throw error;
@@ -54,7 +60,7 @@ app.listen(5000, () => {
     });
 });
 
-app.listen(5001, () => {
+app.listen(5002, () => {
     MongoClient.connect(CONNECTION_URL, { useNewUrlParser: true }, (error, client) => {
         if(error) {
             throw error;
