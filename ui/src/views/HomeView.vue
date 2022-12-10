@@ -135,7 +135,7 @@
                           v-on="on"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="date" scrollable>
+                      <v-date-picker v-model="date" scrollable :allowed-dates="allowDates">
                         <v-spacer></v-spacer>
                         <v-btn text color="primary" @click="modal = false">
                           Cancel
@@ -316,6 +316,8 @@ export default {
     email: "",
     usedDate: false,
     isCheck: false,
+    isWeekendOpen: false,
+    isSundayOpen: false,
     optiuni: [
       {
         name: "Depunere sau retragere bani",
@@ -400,6 +402,15 @@ export default {
     mouseLeave() {
       this.mouseMonth = null;
     },
+    allowDates(val) {
+      const day = new Date(val).toLocaleDateString("en-US", {weekday: "long"});
+      if ((day == "Saturday" || day == "Sunday") && this.isWeekendOpen == false)
+        return false;
+      if (day == "Sunday" && this.isSundayOpen == false)
+        return false;
+
+      return true;
+    }
   },
   watch: {
     settings(newSettings) {
@@ -412,6 +423,9 @@ export default {
       this.selectedBranch = JSON.parse(localStorage.getItem("chosenBranch"));
 
       if (this.selectedBranch) {
+        this.isWeekendOpen = this.selectedBranch.appointmentsSchedule.isWeekendOpen;
+        this.isSundayOpen = this.selectedBranch.appointmentsSchedule.isSundayOpen;
+
         this.ore = [];
 
         const mFStart =
