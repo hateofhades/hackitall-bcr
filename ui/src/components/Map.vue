@@ -1,15 +1,16 @@
 <template>
     <v-container fill-height fluid class="pa-0">
-        <GmapMap class="ma-0 pa-0" fill-height :center="{ lat: branches[0].location.latitude, lng: branches[0].location.longitude }"
-            :zoom="zoom" map-type-id="terrain" style="width: 100%; height:100%" ref="mapRef" :options="options">
+        <GmapMap class="ma-0 pa-0" fill-height
+            :center="{ lat: branches[0].location.latitude, lng: branches[0].location.longitude }" :zoom="zoom"
+            map-type-id="terrain" style="width: 100%; height:100%" ref="mapRef" :options="options">
             <GmapMarker :position="userLocation" :clickable="false" :draggable="false"
                 icon="/img/markers/rsz_user.png" />
             <GmapMarker v-for="branch in branches" v-bind:key="branch.name"
                 :position="{ lat: branch.location.latitude, lng: branch.location.longitude }" :clickable="true"
-                :draggable="false" icon="img/markers/rsz_bcr.png" @click="selectedBranch = branch; selected = true"/>
+                :draggable="false" icon="img/markers/rsz_bcr.png" @click="selectedBranch = branch; selected = true" />
         </GmapMap>
-        <v-btn color="#1967D2" class="mt-8 ml-4" style="position:absolute; top:0; color:white"><v-icon
-                class="mr-2">mdi-arrow-left</v-icon>Inapoi la cautare</v-btn>
+        <v-btn color="#1967D2" class="mt-8 ml-4" style="position:absolute; top:0; color:white"
+            @click="goBackToList"><v-icon class="mr-2">mdi-arrow-left</v-icon>Inapoi la cautare</v-btn>
         <v-btn @click="moveMapToMe" color="#1967D2" v-if="!selected" class="mb-8 mr-4" fab
             style="position:absolute; bottom:0; right:0; color:white"><v-icon>mdi-crosshairs-gps</v-icon></v-btn>
         <v-chip color="#22416C" v-if="!selected" class="mb-8"
@@ -25,8 +26,8 @@
             <v-card-text>
                 <p class="ma-0 mt-4">{{ selectedBranch.address }}</p>
                 <p class="ma-0" style="color:green">L-V: {{ selectedBranch.schedule.mf }}</p>
-                <v-btn class="mt-4" color="#1967D2" style="color:white">Alege</v-btn>
-                <v-btn class="mt-4 ml-4" color="red" style="color:white" @click="selected=false">Anuleaza</v-btn>
+                <v-btn class="mt-4" color="#1967D2" style="color:white" @click="chooseBranch(selectedBranch)">Alege</v-btn>
+                <v-btn class="mt-4 ml-4" color="red" style="color:white" @click="selected = false">Inchide</v-btn>
             </v-card-text>
         </v-card>
     </v-container>
@@ -86,7 +87,7 @@ export default {
             this.userLocation.lat = position.coords.latitude;
             this.userLocation.lng = position.coords.longitude;
 
-            moveMapToMe();
+            this.moveMapToMe();
         },
         deg2rad(deg) {
             return deg * (Math.PI / 180)
@@ -107,7 +108,7 @@ export default {
         displayDistance(lat1, lon1) {
             const distance = this.getDistanceFromLatLonInKm(lat1, lon1, this.userLocation.lat, this.userLocation.lng);
 
-            if(distance < 1) {
+            if (distance < 1) {
                 return (distance * 1000).toFixed(0) + " m";
             } else {
                 return distance.toFixed(2) + " km";
@@ -116,7 +117,15 @@ export default {
         moveMapToMe() {
             this.$refs.mapRef.$mapPromise.then((map) => {
                 map.panTo(this.userLocation);
-            }); 
+            });
+        },
+        goBackToList() {
+            this.$router.push({ name: 'home', query: { step: 2 } });
+        },
+        chooseBranch(branchSelected) {
+            console.log(branchSelected);
+            localStorage.setItem('chosenBranch', JSON.stringify(branchSelected));
+            this.$router.push({ name: 'home', query: { step: 3 } });
         }
     },
     mounted() {
