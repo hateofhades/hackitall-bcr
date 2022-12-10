@@ -383,8 +383,12 @@ export default {
 
         const mFStart =
           this.selectedBranch.appointmentsSchedule.scheduleMonFriStart;
-        const mFEnd =
+        let mFEnd =
           this.selectedBranch.appointmentsSchedule.scheduleMonFriEnd;
+
+        if (mFStart.hour == mFEnd.hour) {
+          mFEnd.hour = 17;
+        }
 
         if (mFStart.minute == 0) {
           this.ore.push({
