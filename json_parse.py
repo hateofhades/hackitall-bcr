@@ -15,7 +15,12 @@ for branch in data["serviceResponse"]:
     address = branch["br_street"]
     city = branch["br_city"]
     telephone = branch["telephone"]
-    location = branch["location"]
+    locationHelp = branch["location"]
+    location = {
+        "latitude": float(locationHelp["latitude"]),
+        "longitude": float(locationHelp["longitude"]),
+        "address": locationHelp["address"]
+    }
     schedule = branch["schedule"]
     appointmentsSchedule = branch["appointmentsSchedule"]
 
