@@ -141,11 +141,11 @@
                       Introdu urmatoarele date despre tine:
                     </p>
                     <div>
-                      <v-text-field label="Nume" :rules="rules" hide-details="auto" :value="nume"></v-text-field>
-                      <v-text-field label="Prenume" :rules="rules" hide-details="auto" :value="prenume"></v-text-field>
+                      <v-text-field label="Nume" :rules="rules" hide-details="auto" v-model="nume"></v-text-field>
+                      <v-text-field label="Prenume" :rules="rules" hide-details="auto" v-model="prenume"></v-text-field>
                       <v-text-field label="Numar personal de identificare" :rules="cnpRules" hide-details="auto"
-                        :value="cnp"></v-text-field>
-                      <v-text-field label="Email" :rules="emailRules" hide-details="auto" :value="email"></v-text-field>
+                        v-model="cnp"></v-text-field>
+                      <v-text-field label="Email" :rules="emailRules" hide-details="auto" v-model="email"></v-text-field>
                     </div>
 
                     <v-radio-group v-model="ex7" column>
@@ -165,7 +165,7 @@
                 </v-row>
               </v-card>
 
-              <v-btn color="primary" @click="e1 = 5" class="mt-4" :disabled="isCheck == false">
+              <v-btn color="primary" @click="e1 = 5" class="mt-4" :disabled="!isValidNext">
                 Continuati
               </v-btn>
             </v-stepper-content>
@@ -197,6 +197,7 @@ export default {
     nume: "",
     prenume: "",
     email: "",
+    ex7: "indigo",
     usedDate: false,
     isCheck: false,
     isWeekendOpen: false,
@@ -253,6 +254,7 @@ export default {
     menu: false,
     modal: false,
     menu2: false,
+    isValidNext: false,
     rules: [
       (value) => !!value || "Required.",
       (value) => (value && value.length >= 3) || "Min 3 characters",
@@ -293,6 +295,13 @@ export default {
         return false;
 
       return true;
+    },
+    isValidCheck() {
+      this.isValidNext = true;
+      if (this.nume.length < 3) this.isValidNext = false;
+      if (this.prenume.length < 3) this.isValidNext = false;
+      if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.isValidNext = false;
+      if (!validCNP(this.cnp)) this.isValidNext = false;
     }
   },
   watch: {
@@ -356,6 +365,24 @@ export default {
         this.oraSelect.push(newOra[1]);
       }
     },
+    cnp() {
+      this.isValidCheck();
+    },
+    nume() {
+      this.isValidCheck();
+    },
+    prenume() {
+      this.isValidCheck();
+    },
+    email() {
+      this.isValidCheck();
+    },
+    isCheck() {
+      this.isValidCheck();
+    },
+    ex7() {
+      this.isValidCheck();
+    }
   },
   mounted() {
     if (this.$route.query.step) {
