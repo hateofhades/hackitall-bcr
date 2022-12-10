@@ -40,7 +40,7 @@ export default {
     props: {
         // eslint-disable-next-line
         step: String | Number,
-        settings: Array,
+        settings: Array | Object,
     },
     methods: {
         async getBranches() {

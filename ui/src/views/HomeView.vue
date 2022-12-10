@@ -46,16 +46,8 @@
           <v-stepper-items>
             <v-stepper-content step="1">
               <v-card elevation="0">
-                <v-list-item-group
-                  v-model="settings"
-                  multiple
-                  active-class=""
-                  dense
-                >
-                  <v-list
-                    rounded
-                    class="ma-0"
-                    style="
+                <v-list-item-group v-model="settings" multiple active-class="" dense>
+                  <v-list rounded class="ma-0" style="
                       max-width: 100%;
                       white-space: normal;
                       word-wrap: break-word;
@@ -76,7 +68,7 @@
                   </v-list>
                 </v-list-item-group>
               </v-card>
-              <v-btn color="primary" @click="e1 = 2"> Continuati </v-btn>
+              <v-btn color="primary" @click="e1 = 2" :disabled="settings.length == 0"> Continuati </v-btn>
             </v-stepper-content>
             <v-stepper-content step="2">
               <LocationSearch :step="e1" :settings="settings" @nextStep="nextStep" />
@@ -86,76 +78,39 @@
               <v-card elevation="0">
                 <v-row justify="center">
                   <v-col cols="12" sm="6" md="4">
-                    <v-dialog
-                      ref="dialog"
-                      v-model="modal"
-                      :return-value.sync="date"
-                      persistent
-                      width="290px"
-                    >
+                    <v-dialog ref="dialog" v-model="modal" :return-value.sync="date" persistent width="290px">
                       <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="date"
-                          label="Alege o data"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
+                        <v-text-field v-model="date" label="Alege o data" prepend-icon="mdi-calendar" readonly
+                          v-bind="attrs" v-on="on"></v-text-field>
                       </template>
                       <v-date-picker v-model="date" scrollable>
                         <v-spacer></v-spacer>
                         <v-btn text color="primary" @click="modal = false">
                           Cancel
                         </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="
-                            $refs.dialog.save(date);
-                            usedDate = true;
-                          "
-                        >
+                        <v-btn text color="primary" @click="
+  $refs.dialog.save(date);
+usedDate = true;
+                        ">
                           OK
                         </v-btn>
                       </v-date-picker>
                     </v-dialog>
 
-                    <v-list-item-group
-                      v-model="settings"
-                      multiple
-                      active-class=""
-                      dense
-                    >
-                      <v-list
-                        rounded
-                        class="ma-0"
-                        style="
+                    <v-list-item-group v-model="oraSelect" multiple active-class="" dense>
+                      <v-list rounded class="ma-0" style="
                           max-width: 100%;
                           white-space: normal;
                           word-wrap: break-word;
-                        "
-                      >
-                        <v-list-item
-                          v-for="ora in ore"
-                          v-bind:key="ora.name"
-                          :value="ora"
-                        >
+                        ">
+                        <v-list-item v-for="ora in ore" v-bind:key="ora.name" :value="ora" v-if="usedDate">
                           <template v-slot:default="{ active }">
                             <v-list-item-content v-if="usedDate">
-                              <v-list-item-title
-                                style="word-wrap: break-word"
-                                >{{ ora.name }}</v-list-item-title
-                              >
+                              <v-list-item-title style="word-wrap: break-word">{{ ora.name }}</v-list-item-title>
                             </v-list-item-content>
                             <v-list-item-action>
-                              <v-checkbox
-                                :hidden="true"
-                                :input-value="active"
-                                off-icon=" "
-                                on-icon="mdi-check-decagram"
-                                color="green"
-                              ></v-checkbox>
+                              <v-checkbox :hidden="true" :input-value="active" off-icon=" " on-icon="mdi-check-decagram"
+                                color="green"></v-checkbox>
                             </v-list-item-action>
                           </template>
                         </v-list-item>
@@ -165,7 +120,7 @@
                 </v-row>
               </v-card>
 
-              <v-btn color="primary" @click="e1 = 4"> Continuati </v-btn>
+              <v-btn color="primary" @click="e1 = 4" :disabled="oraSelect == null"> Continuati </v-btn>
             </v-stepper-content>
 
             <v-stepper-content step="4">
@@ -241,7 +196,8 @@ export default {
         name: "13:30",
       },
     ],
-    settings: {},
+    oraSelect: null,
+    settings: [],
     windowWidth: window.innerWidth,
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
@@ -277,13 +233,46 @@ export default {
       }
     },
     e1() {
-        this.selectedBranch = JSON.parse(localStorage.getItem("chosenBranch"));
-        console.log(this.selectedBranch);
+      this.selectedBranch = JSON.parse(localStorage.getItem("chosenBranch"));
+
+      if (this.selectedBranch) {
+        this.ore = [];
+
+        const mFStart = this.selectedBranch.appointmentsSchedule.scheduleMonFriStart;
+        const mFEnd = this.selectedBranch.appointmentsSchedule.scheduleMonFriEnd;
+
+        if (mFStart.minute == 0) {
+          this.ore.push({
+            name: mFStart.hour + ":00"
+          });
+        }
+
+        this.ore.push({
+          name: mFStart.hour + ":30"
+        });
+
+        for (let i = mFStart.hour + 1; i < mFEnd.hour; i++) {
+          this.ore.push({
+            name: i + ":00"
+          });
+          this.ore.push({
+            name: i + ":30"
+          });
+        }
+
+        this.ore.push({
+          name: mFEnd.hour + ":00"
+        });
+
+        if (mFEnd.minute == 30) {
+          this.ore.push({
+            name: mFEnd.hour + ":30"
+          });
+        }
+      }
     }
   },
   mounted() {
-    console.log("Sal");
-
     if (this.$route.query.step) {
       console.log(this.$route.query.step);
 
