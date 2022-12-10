@@ -82,7 +82,7 @@ export default {
         deg2rad(deg) {
             return deg * (Math.PI / 180)
         },
-        displayDistance(lat1, lon1, lat2 = null, lon2 = null) {
+        displayDistance(lat1, lon1) {
             if (this.landmarkSearch == "" && !this.userLocation.lat)
                 return "";
 
