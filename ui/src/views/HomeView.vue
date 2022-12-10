@@ -1,26 +1,14 @@
 <template>
   <v-container class="pa-0 ma-0" fluid>
     <v-app-bar color="#AAE1FA" rounded>
-      <v-btn
-        :disabled="e1 == 1"
-        @click="goBack"
-        icon
-        fab
-        dark
-        small
-        color="primary"
-      >
+      <v-btn :disabled="e1 == 1" @click="goBack" icon fab dark small color="primary">
         <v-icon class="mx-2" dark left>mdi-arrow-left</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
       <v-toolbar-title class="font-weight-bold">{{ title }}</v-toolbar-title>
-      <img
-        class="mr-3"
-        :src="
-          require('../../public/img/logo-BCR-high-resolution-1980x1080-1140x560.jpg')
-        "
-        height="40"
-      />
+      <img class="mr-3" :src="
+        require('../../public/img/logo-BCR-high-resolution-1980x1080-1140x560.jpg')
+      " height="40" />
       <v-spacer></v-spacer>
     </v-app-bar>
 
@@ -58,137 +46,73 @@
           <v-stepper-items>
             <v-stepper-content step="1">
               <v-card elevation="0">
-                <v-list-item-group
-                  v-model="settings"
-                  multiple
-                  active-class=""
-                  dense
-                >
-                  <v-list
-                    rounded
-                    class="ma-0"
-                    style="
+                <v-list-item-group v-model="settings" multiple active-class="" dense>
+                  <v-list rounded class="ma-0" style="
                       max-width: 100%;
                       white-space: normal;
                       word-wrap: break-word;
-                    "
-                  >
-                    <v-list-item
-                      v-for="optiune in optiuni"
-                      v-bind:key="optiune.name"
-                      :value="optiune"
-                    >
+                    ">
+                    <v-list-item v-for="optiune in optiuni" v-bind:key="optiune.name" :value="optiune">
                       <template v-slot:default="{ active }">
                         <v-list-item-content>
                           <v-list-item-title style="word-wrap: break-word">{{
-                            optiune.name
+                              optiune.name
                           }}</v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-action>
-                          <v-checkbox
-                            :hidden="true"
-                            :input-value="active"
-                            off-icon=" "
-                            on-icon="mdi-check-decagram"
-                            color="green"
-                          ></v-checkbox>
+                          <v-checkbox :hidden="true" :input-value="active" off-icon=" " on-icon="mdi-check-decagram"
+                            color="green"></v-checkbox>
                         </v-list-item-action>
                       </template>
                     </v-list-item>
                   </v-list>
                 </v-list-item-group>
               </v-card>
-              <v-btn
-                color="primary"
-                @click="e1 = 2"
-                :disabled="settings.length == 0"
-              >
+              <v-btn color="primary" @click="e1 = 2" :disabled="settings.length == 0">
                 Continuati
               </v-btn>
             </v-stepper-content>
             <v-stepper-content step="2">
-              <LocationSearch
-                :step="e1"
-                :settings="settings"
-                @nextStep="nextStep"
-              />
+              <LocationSearch :step="e1" :settings="settings" @nextStep="nextStep" />
             </v-stepper-content>
 
             <v-stepper-content step="3">
               <v-card elevation="0">
                 <v-row justify="center">
                   <v-col cols="12" sm="6" md="4">
-                    <v-dialog
-                      ref="dialog"
-                      v-model="modal"
-                      :return-value.sync="date"
-                      persistent
-                      width="290px"
-                    >
+                    <v-dialog ref="dialog" v-model="modal" :return-value.sync="date" persistent width="290px">
                       <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="date"
-                          label="Alege o data"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
+                        <v-text-field v-model="date" label="Alege o data" prepend-icon="mdi-calendar" readonly
+                          v-bind="attrs" v-on="on"></v-text-field>
                       </template>
-                      <v-date-picker v-model="date" scrollable :allowed-dates="allowDates">
+                      <v-date-picker :first-day-of-week="1" v-model="date" scrollable :allowed-dates="allowDates">
                         <v-spacer></v-spacer>
                         <v-btn text color="primary" @click="modal = false">
                           Cancel
                         </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="
-                            $refs.dialog.save(date);
-                            usedDate = true;
-                          "
-                        >
+                        <v-btn text color="primary" @click="
+                          $refs.dialog.save(date);
+                        usedDate = true;
+                        ">
                           OK
                         </v-btn>
                       </v-date-picker>
                     </v-dialog>
 
-                    <v-list-item-group
-                      v-model="oraSelect"
-                      multiple
-                      active-class=""
-                      dense
-                    >
-                      <v-list
-                        rounded
-                        class="ma-0"
-                        style="
+                    <v-list-item-group v-model="oraSelect" multiple active-class="" dense>
+                      <v-list rounded class="ma-0" style="
                           max-width: 100%;
                           white-space: normal;
                           word-wrap: break-word;
-                        "
-                        v-if="usedDate"
-                      >
-                        <v-list-item
-                          v-for="ora in ore"
-                          v-bind:key="ora.name"
-                          :value="ora"
-                        >
+                        " v-if="usedDate">
+                        <v-list-item v-for="ora in ore" v-bind:key="ora.name" :value="ora">
                           <template v-slot:default="{ active }">
                             <v-list-item-content>
-                              <v-list-item-title
-                                style="word-wrap: break-word"
-                                >{{ ora.name }}</v-list-item-title
-                              >
+                              <v-list-item-title style="word-wrap: break-word">{{ ora.name }}</v-list-item-title>
                             </v-list-item-content>
                             <v-list-item-action>
-                              <v-checkbox
-                                :hidden="true"
-                                :input-value="active"
-                                off-icon=" "
-                                on-icon="mdi-check-decagram"
-                                color="green"
-                              ></v-checkbox>
+                              <v-checkbox :hidden="true" :input-value="active" off-icon=" " on-icon="mdi-check-decagram"
+                                color="green"></v-checkbox>
                             </v-list-item-action>
                           </template>
                         </v-list-item>
@@ -198,11 +122,7 @@
                 </v-row>
               </v-card>
 
-              <v-btn
-                color="primary"
-                @click="e1 = 4"
-                :disabled="oraSelect == null || oraSelect.length == 0"
-              >
+              <v-btn color="primary" @click="e1 = 4" :disabled="oraSelect == null || oraSelect.length == 0">
                 Continuati
               </v-btn>
             </v-stepper-content>
@@ -214,75 +134,38 @@
                     <v-row justify="center">
                       <p style="font-size: 20px; font-weight: bold">
                         George vrea sa te cunoasca mai bine.
-                        <img
-                          class="mr-0"
-                          :src="require('../../public/img/store-go.png')"
-                          height="40"
-                        />
+                        <img class="mr-0" :src="require('../../public/img/store-go.png')" height="40" />
                       </p>
                     </v-row>
                     <p style="font-size: 17px">
                       Introdu urmatoarele date despre tine:
                     </p>
                     <div>
-                      <v-text-field
-                        label="Nume"
-                        :rules="rules"
-                        hide-details="auto"
-                        :value="nume"
-                      ></v-text-field>
-                      <v-text-field
-                        label="Prenume"
-                        :rules="rules"
-                        hide-details="auto"
-                        :value="prenume"
-                      ></v-text-field>
-                      <v-text-field
-                        label="Numar personal de identificare"
-                        :rules="cnpRules"
-                        hide-details="auto"
-                        :value="cnp"
-                      ></v-text-field>
-                      <v-text-field
-                        label="Email"
-                        :rules="emailRules"
-                        hide-details="auto"
-                        :value="email"
-                      ></v-text-field>
+                      <v-text-field label="Nume" :rules="rules" hide-details="auto" :value="nume"></v-text-field>
+                      <v-text-field label="Prenume" :rules="rules" hide-details="auto" :value="prenume"></v-text-field>
+                      <v-text-field label="Numar personal de identificare" :rules="cnpRules" hide-details="auto"
+                        :value="cnp"></v-text-field>
+                      <v-text-field label="Email" :rules="emailRules" hide-details="auto" :value="email"></v-text-field>
                     </div>
 
                     <v-radio-group v-model="ex7" column>
-                      <v-radio
-                        label="Am o carte de identitate emisa in Romania"
-                        color="indigo"
-                        value="indigo"
-                      ></v-radio>
-                      <v-radio
-                        label="Nu am o carte de identitate emisa in Romani"
-                        color="indigo darken-3"
-                        value="indigo darken-3"
-                      ></v-radio>
+                      <v-radio label="Am o carte de identitate emisa in Romania" color="indigo"
+                        value="indigo"></v-radio>
+                      <v-radio label="Nu am o carte de identitate emisa in Romani" color="indigo darken-3"
+                        value="indigo darken-3"></v-radio>
                     </v-radio-group>
 
-                    <v-checkbox
-                      v-model="isCheck"
-                      input-value="false"
-                      label="Sunt de acord cu politica de prelucrare a datelor cu caracter personal."
-                    ></v-checkbox>
+                    <v-checkbox v-model="isCheck" input-value="false"
+                      label="Sunt de acord cu politica de prelucrare a datelor cu caracter personal."></v-checkbox>
 
-                    <v-btn depressed href="/termsandc" target="_blank" >
+                    <v-btn depressed href="/termsandc" target="_blank">
                       Termeni si conditii
                     </v-btn>
                   </v-col>
                 </v-row>
               </v-card>
 
-              <v-btn
-                color="primary"
-                @click="e1 = 5"
-                class="mt-4"
-                :disabled="isCheck == false"
-              >
+              <v-btn color="primary" @click="e1 = 5" class="mt-4" :disabled="isCheck == false">
                 Continuati
               </v-btn>
             </v-stepper-content>
@@ -403,7 +286,7 @@ export default {
       this.mouseMonth = null;
     },
     allowDates(val) {
-      const day = new Date(val).toLocaleDateString("en-US", {weekday: "long"});
+      const day = new Date(val).toLocaleDateString("en-US", { weekday: "long" });
       if ((day == "Saturday" || day == "Sunday") && this.isWeekendOpen == false)
         return false;
       if (day == "Sunday" && this.isSundayOpen == false)
