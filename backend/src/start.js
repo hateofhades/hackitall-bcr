@@ -413,3 +413,14 @@ app.post("/appointmentsCancel", (request, response) => {
 	get_app_by_name(request);
 	response.status(200).send();
 });
+
+app.get("/getlandmark", async (request, response) => {
+	let url =`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${request.query.search}&key=AIzaSyCftc-FGZMnkDhWCMZgNENW9bF9EF8RhRY&inputtype=textquery&fields=geometry`;
+	const res = await axios({
+		url,
+		method: 'GET',
+		responseType: 'stream'
+	});
+
+	response.json(res.data);
+});
