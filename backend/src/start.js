@@ -111,18 +111,9 @@ async function sendMail(request) {
 	mailOptions['alternatives']['content'] 
 	    = new Buffer(calendarObj.toString())
 
-	//let info = transporter.sendMail(mailOptions);
-
 	transporter.sendMail(mailOptions, function(err, info){
 	       console.log(err,info);
 	});
-	  //let info = transporter.sendMail({
-	    //from: '"Programări BCR" <bcr-no-reply@mail.com>', // sender address
-	    //to: request.body['email'], // list of receivers
-	    //subject: "Subiect programare", // Subject line
-	    //text: "Hello world?", // plain text body
-	  //});
-	//console.log(info);
 }
 
 app.post("/appointmentsAdd", (request, response) => {
@@ -145,4 +136,31 @@ app.get("/appointments", (request, response) => {
         }
         response.send(result);
     });
+});
+
+async function get_app_by_name(request) {
+	let get_rc = await collectionAppo.find({}).toArray();
+	console.log(get_rc);
+
+	get_rc.forEach(function(entry) {
+		console.log(entry);
+
+		if (entry['firstname'] == request.body['firstname'] &&
+		entry['lastname'] == request.body['lastname'] &&
+		entry['email'] == request.body['email'] && 
+		entry['starttime'] == request.body['starttime'] &&
+		entry['endtime'] == request.body['endtime'] &&
+		entry['location'] == request.body['location']) {
+
+			let id = entry['_id'];
+			console.log(id);
+
+			collectionAppo.remove(entry);
+		}
+	});
+}
+
+app.post("/appointmentsCancel", (request, response) => {
+	get_app_by_name(request);
+	response.status(200).send();
 });
