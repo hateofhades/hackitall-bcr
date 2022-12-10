@@ -12,6 +12,7 @@ const fs = require('fs');
 const request = require('request');
 const Str = require('@supercharge/strings')
 const fetch = require('fetch');
+const cors = require('cors');
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -28,6 +29,11 @@ const transporter = nodemailer.createTransport({
 var app = Express();
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
+app.use(cors(
+	{
+		origin: 'http://localhost:8080'
+	}
+));
 var database, collection, collectionAppo;
 
 function getIcalObjectInstance(starttime, endtime, location, url)

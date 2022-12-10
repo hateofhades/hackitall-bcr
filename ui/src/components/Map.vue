@@ -10,7 +10,7 @@
         </GmapMap>
         <v-btn color="#1967D2" class="mt-8 ml-4" style="position:absolute; top:0; color:white"><v-icon
                 class="mr-2">mdi-arrow-left</v-icon>Inapoi la cautare</v-btn>
-        <v-btn color="#1967D2" v-if="!selected" class="mb-8 mr-4" fab
+        <v-btn @click="moveMapToMe" color="#1967D2" v-if="!selected" class="mb-8 mr-4" fab
             style="position:absolute; bottom:0; right:0; color:white"><v-icon>mdi-crosshairs-gps</v-icon></v-btn>
         <v-chip color="#22416C" v-if="!selected" class="mb-8"
             style="position:absolute; bottom:0; color:white; left: 50%; -webkit-transform: translateX(-50%); transform: translateX(-50%); margin: auto">Alege
@@ -71,6 +71,10 @@ export default {
         selectedBranch: {}
     }),
     methods: {
+        async getBranches() {
+            const branchesRequest = await fetch('http://localhost:5001/branches');
+            this.branches = await branchesRequest.json();
+        },
         getUserLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(this.showPosition);
@@ -82,9 +86,7 @@ export default {
             this.userLocation.lat = position.coords.latitude;
             this.userLocation.lng = position.coords.longitude;
 
-            this.$refs.mapRef.$mapPromise.then((map) => {
-                map.panTo(this.userLocation);
-            });
+            moveMapToMe();
         },
         deg2rad(deg) {
             return deg * (Math.PI / 180)
@@ -110,10 +112,18 @@ export default {
             } else {
                 return distance.toFixed(2) + " km";
             }
+        },
+        moveMapToMe() {
+            this.$refs.mapRef.$mapPromise.then((map) => {
+                map.panTo(this.userLocation);
+            }); 
         }
     },
     mounted() {
         this.getUserLocation();
-    },
+        this.getBranches();
+
+        this.$forceUpdate();
+    }
 };
 </script>
