@@ -67,11 +67,10 @@
                   rounded
                 >
                   <v-list rounded>
-
                     <v-list-item v-for="optiune in optiuni" v-bind:key="optiune.name" :value="optiune">
                       <template v-slot:default="{ active }">
                         <v-list-item-content>
-                          <v-list-item-title
+                          <v-list-item-title 
                             >{{optiune.name}}</v-list-item-title
                           >
                         </v-list-item-content>
@@ -86,7 +85,6 @@
                         </v-list-item-action>
                       </template>
                     </v-list-item>
-
                   </v-list>
                 </v-list-item-group>
               </v-card>
@@ -152,5 +150,13 @@ export default {
       console.log(this.settings)
     },
   },
+  watch: {
+    settings(newSettings) {
+      if(newSettings.length > 1) {
+        this.settings = [];
+        this.settings.push(newSettings[1]);
+      }
+    }
+  }
 };
 </script>
