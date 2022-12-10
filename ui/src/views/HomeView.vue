@@ -1,26 +1,14 @@
 <template>
   <v-container class="pa-0 ma-0" fluid>
     <v-app-bar color="#AAE1FA" rounded>
-      <v-btn
-        :disabled="e1 == 1"
-        @click="goBack"
-        icon
-        fab
-        dark
-        small
-        color="primary"
-      >
+      <v-btn :disabled="e1 == 1" @click="goBack" icon fab dark small color="primary">
         <v-icon class="mx-2" dark left>mdi-arrow-left</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
       <v-toolbar-title class="font-weight-bold">{{ title }}</v-toolbar-title>
-      <img
-        class="mr-3"
-        :src="
-          require('../../public/img/logo-BCR-high-resolution-1980x1080-1140x560.jpg')
-        "
-        height="40"
-      />
+      <img class="mr-3" :src="
+        require('../../public/img/logo-BCR-high-resolution-1980x1080-1140x560.jpg')
+      " height="40" />
       <v-spacer></v-spacer>
     </v-app-bar>
 
@@ -71,27 +59,17 @@
                       max-width: 100%;
                       white-space: normal;
                       word-wrap: break-word;
-                    "
-                  >
-                    <v-list-item
-                      v-for="optiune in optiuni"
-                      v-bind:key="optiune.name"
-                      :value="optiune"
-                    >
+                    ">
+                    <v-list-item v-for="optiune in optiuni" v-bind:key="optiune.name" :value="optiune">
                       <template v-slot:default="{ active }">
                         <v-list-item-content>
                           <v-list-item-title style="word-wrap: break-word">{{
-                            optiune.name
+                              optiune.name
                           }}</v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-action>
-                          <v-checkbox
-                            :hidden="true"
-                            :input-value="active"
-                            off-icon=" "
-                            on-icon="mdi-check-decagram"
-                            color="green"
-                          ></v-checkbox>
+                          <v-checkbox :hidden="true" :input-value="active" off-icon=" " on-icon="mdi-check-decagram"
+                            color="green"></v-checkbox>
                         </v-list-item-action>
                       </template>
                     </v-list-item>
@@ -100,12 +78,8 @@
               </v-card>
               <v-btn color="primary" @click="e1 = 2"> Continuati </v-btn>
             </v-stepper-content>
-            <LocationSearch />
-
             <v-stepper-content step="2">
-              <v-card class="mb-12" height="200px" elevation="0"></v-card>
-
-              <v-btn color="primary" @click="e1 = 3"> Continuati </v-btn>
+              <LocationSearch :step="e1" :settings="settings" @nextStep="nextStep" />
             </v-stepper-content>
 
             <v-stepper-content step="3">
@@ -284,6 +258,8 @@ export default {
     onResize() {
       this.windowWidth = window.innerWidth;
     },
+    nextStep() {
+      this.e1++;
     mouseEnter(month) {
       this.$set(this.done, 1, true);
       this.mouseMonth = month;
@@ -299,8 +275,21 @@ export default {
         this.settings.push(newSettings[1]);
       }
     },
+    e1() {
+        this.selectedBranch = JSON.parse(localStorage.getItem("chosenBranch"));
+        console.log(this.selectedBranch);
+    }
   },
   mounted() {
+    console.log("Sal");
+
+    if (this.$route.query.step) {
+      console.log(this.$route.query.step);
+
+      this.e1 = this.$route.query.step;
+      this.settings = JSON.parse(localStorage.getItem("settings"));
+    }
+
     this.$nextTick(() => {
       window.addEventListener("resize", this.onResize);
     });
