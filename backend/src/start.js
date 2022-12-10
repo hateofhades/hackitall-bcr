@@ -171,11 +171,15 @@ async function sendMail(request) {
 
 	mailOptions = {
 		to: request.body['email'],
-		subject: "Subiect programare", // Subject line
-		//from: '"Programări BCR" <bcr-no-reply@mail.com>', // sender address
-		//html: "<b>Hello world?</b>", // html body
-		//text: "Hello world?", // plain text body
-		//html: 'Embedded image: <img src="cid:unique@nodemailer.com"/>',
+		subject: "Programare BCR " + request.body['location'], // Subject line
+		text: `
+		Bună, ` + request.body['firstname'] + `.\n
+		Programarea ta la ` + request.body['location'] + ` a fost confirmată
+		Vezi locația pe hartă aici: ` + mapsUrl + `
+		Pentru a anula rezervarea, apasă aici: ` + delUrl +`
+		Cu drag,
+		Echipa BCR.
+		`,
 		html: `
 		<head>
 		<style>
@@ -190,7 +194,7 @@ async function sendMail(request) {
 
 		   .logo { 
 		   margin: 0 auto;
-		   width: 100px; 
+		   width: 200px; 
 		   display: block;
 		   border-radius: 8%;
 		   }
@@ -213,7 +217,7 @@ async function sendMail(request) {
 		<p>Vezi locația pe hartă <a href="` + mapsUrl + `">aici</a>.</p><br>
 		<p>Pentru a anula rezervarea, apasă <a href="` + delUrl + `">aici</a>.</p><br>
 		<p>Cu drag,</p>
-		<p>Echipa BCR</p>
+		<p>Echipa BCR.</p>
 		</body>
 		`,
 
