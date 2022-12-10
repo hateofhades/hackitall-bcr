@@ -25,7 +25,7 @@
     </v-app-bar>
 
     <v-row justify="center">
-      <v-col cols="10">
+      <v-col :cols="windowWidth < 700?'12':'8'">
         <v-stepper v-model="e1" class="mt-4" elevation="4">
           <v-stepper-header>
             <v-stepper-step :complete="e1 > 1" step="1">
@@ -170,12 +170,16 @@ export default {
       },
     ],
     settings: {},
+    windowWidth: window.innerWidth
   }),
   methods: {
     goBack() {
       this.e1--;
       console.log(this.settings);
     },
+    onResize() {
+      this.windowWidth = window.innerWidth;
+    }
   },
   watch: {
     settings(newSettings) {
@@ -185,5 +189,10 @@ export default {
       }
     },
   },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize)
+    });
+  }
 };
 </script>
