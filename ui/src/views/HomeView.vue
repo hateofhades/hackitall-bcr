@@ -212,7 +212,7 @@
                 <v-row justify="center">
                   <v-col cols="10">
                     <v-row justify="center">
-                      <p style="font-size: 20px; font-weight: bold" >
+                      <p style="font-size: 20px; font-weight: bold">
                         George vrea sa te cunoasca mai bine.
                         <img
                           class="mr-0"
@@ -250,11 +250,41 @@
                         :value="email"
                       ></v-text-field>
                     </div>
+
+                    <v-radio-group v-model="ex7" column>
+                      <v-radio
+                        label="Am o carte de identitate emisa in Romania"
+                        color="indigo"
+                        value="indigo"
+                      ></v-radio>
+                      <v-radio
+                        label="Nu am o carte de identitate emisa in Romani"
+                        color="indigo darken-3"
+                        value="indigo darken-3"
+                      ></v-radio>
+                    </v-radio-group>
+
+                    <v-checkbox
+                      v-model="isCheck"
+                      input-value="false"
+                      label="Sunt de acord cu politica de prelucrare a datelor cu caracter personal."
+                    ></v-checkbox>
+
+                    <v-btn depressed href="/termsandc" target="_blank" >
+                      Termeni si conditii
+                    </v-btn>
                   </v-col>
                 </v-row>
               </v-card>
 
-              <v-btn color="primary" @click="e1 = 5" class="mt-4"> Continuati </v-btn>
+              <v-btn
+                color="primary"
+                @click="e1 = 5"
+                class="mt-4"
+                :disabled="isCheck == false"
+              >
+                Continuati
+              </v-btn>
             </v-stepper-content>
 
             <v-stepper-content step="5">
@@ -285,6 +315,7 @@ export default {
     prenume: "",
     email: "",
     usedDate: false,
+    isCheck: false,
     optiuni: [
       {
         name: "Depunere sau retragere bani",
@@ -343,10 +374,12 @@ export default {
     ],
     cnpRules: [
       (value) => !!value || "Required.",
-      (value) => (validCNP(value)) || "CNP invalid",
+      (value) => validCNP(value) || "CNP invalid",
     ],
     emailRules: [
-    (value) => (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) || "Email invalid",
+      (value) =>
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+        "Email invalid",
     ],
   }),
   methods: {
@@ -437,16 +470,27 @@ export default {
   },
 };
 
-function validCNP( p_cnp ) {
-    var i=0 , hashResult=0 , cnp=[] , hashTable=[2,7,9,1,4,6,3,5,8,2,7,9];
-    for( i=0 ; i<13 ; i++ ) {
-        cnp[i] = parseInt( p_cnp.charAt(i) , 10 );
-        if( isNaN( cnp[i] ) ) { return false; }
-        if( i < 12 ) { hashResult = hashResult + ( cnp[i] * hashTable[i] ); }
+function validCNP(p_cnp) {
+  var i = 0,
+    hashResult = 0,
+    cnp = [],
+    hashTable = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9];
+  if (p_cnp.length !== 13) {
+    return false;
+  }
+  for (i = 0; i < 13; i++) {
+    cnp[i] = parseInt(p_cnp.charAt(i), 10);
+    if (isNaN(cnp[i])) {
+      return false;
     }
-    hashResult = hashResult % 11;
-    if( hashResult == 10 ) { hashResult = 1; }
-    return  cnp[12] == hashResult ;
+    if (i < 12) {
+      hashResult = hashResult + cnp[i] * hashTable[i];
+    }
+  }
+  hashResult = hashResult % 11;
+  if (hashResult == 10) {
+    hashResult = 1;
+  }
+  return cnp[12] == hashResult;
 }
-
 </script>
