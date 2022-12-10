@@ -176,12 +176,53 @@ async function sendMail(request) {
 		//html: "<b>Hello world?</b>", // html body
 		//text: "Hello world?", // plain text body
 		//html: 'Embedded image: <img src="cid:unique@nodemailer.com"/>',
-		html: 'Salut ' + request.body['firstname'] + ',<br><br>' +
-		'Programarea ta la BCR <b>' + request.body['location'] + '</b>' +
-		' a fost confirmată.<br><br>' +
-		'<img src="cid:unique@nodemailer.com"/>' +
-		'<a href=' + mapsUrl + '><b>Vezi imaginea pe hartă:</b></a><br><br>' +
-		'Pentru a anula rezervarea, apasă <a href=' + delUrl + '>aici</a><br><br>',
+		html: `
+		<head>
+		<style>
+		body {
+
+		   color: black;
+		   }
+
+		p {
+			font-size: 16px;
+		}
+
+		   .logo { 
+		   margin: 0 auto;
+		   width: 100px; 
+		   display: block;
+		   border-radius: 8%;
+		   }
+
+		.imag { 
+			margin: 0 auto;
+			width: 400px; 
+			display: block;
+		border-radius: 2%;
+			outline: solid 2px #333; /* This will add a solid, 2px-wide, #333-colored outline to the image */
+		}
+		</style>
+		</head>
+
+		<body>
+		<p><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F2performant.com%2Fblog%2Fwp-content%2Fuploads%2F2015%2F09%2Flogo-BCR-high-resolution-1980x1080.jpg&amp;f=1&amp;nofb=1&amp;ipt=0f6e768d9e50f49052056a6b52c4fa116333346bb228d54926c937cb346818ff&amp;ipo=images" class="logo"></p>
+		<p>Bună, <strong>` + request.body['firstname'] + `</strong></p><br>
+		<p>Programarea ta la ` + request.body['location'] + ` a fost confirmată</p>
+		<p><img src="cid:unique@nodemailer.com" class="imag"></p>
+		<p>Vezi locația pe hartă <a href="` + mapsUrl + `">aici</a>.</p><br>
+		<p>Pentru a anula rezervarea, apasă <a href="` + delUrl + `">aici</a>.</p><br>
+		<p>Cu drag,</p>
+		<p>Echipa BCR</p>
+		</body>
+		`,
+
+		//'Salut ' + request.body['firstname'] + ',<br><br>' +
+		//'Programarea ta la BCR <b>' + request.body['location'] + '</b>' +
+		//' a fost confirmată.<br><br>' +
+		//'<img src="cid:unique@nodemailer.com"/>' +
+		//'<a href=' + mapsUrl + '><b>Vezi imaginea pe hartă:</b></a><br><br>' +
+		//'Pentru a anula rezervarea, apasă <a href=' + delUrl + '>aici</a><br><br>',
 		attachments: [{
 			filename: 'image.png',
 			path: image,
@@ -261,10 +302,16 @@ async function get_id(name, firstname, location) {
 
 	let got_id = await collectionAppo.findOne({ "firstname": firstname,
 			"lastname": name, "location": location});
-	console.log(got_id['_id'].id.toString());
+	console.log(got_id['_id'].id);
 	let id = '';
+	let nr = '';
 	got_id['_id'].id.forEach(function(entr) {
-		id = id + Number(entr).toString(16);
+		nr = Number(entr).toString(16);
+
+		if(nr.length < 2)
+			nr = '0' + nr;
+
+		id = id + nr;
 	});
 
 	console.log(id);
@@ -272,6 +319,7 @@ async function get_id(name, firstname, location) {
 }
 
 async function delete_by_id(id) {
+	console.log(id);
 	let got_id = await collectionAppo.findOne({"_id": new ObjectId(id)});
 	console.log(got_id);
 	collectionAppo.remove(got_id);
