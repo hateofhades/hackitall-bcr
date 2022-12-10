@@ -102,10 +102,10 @@ usedDate = true;
                           max-width: 100%;
                           white-space: normal;
                           word-wrap: break-word;
-                        ">
-                        <v-list-item v-for="ora in ore" v-bind:key="ora.name" :value="ora" v-if="usedDate">
+                        " v-if="usedDate">
+                        <v-list-item v-for="ora in ore" v-bind:key="ora.name" :value="ora">
                           <template v-slot:default="{ active }">
-                            <v-list-item-content v-if="usedDate">
+                            <v-list-item-content>
                               <v-list-item-title style="word-wrap: break-word">{{ ora.name }}</v-list-item-title>
                             </v-list-item-content>
                             <v-list-item-action>
@@ -124,7 +124,42 @@ usedDate = true;
             </v-stepper-content>
 
             <v-stepper-content step="4">
-              <v-card class="mb-12" height="200px" elevation="0"></v-card>
+              <v-card elevation="0">
+                <v-row justify="center">
+                  <v-col cols="10">
+                    <v-row justify="center">
+                      <p style="font-size: 20px; font-weight: bold">
+                        George vrea sa te cunoasca mai bine.
+                        <img
+                          class="mr-0"
+                          :src="require('../../public/img/store-go.png')"
+                          height="40"
+                        />
+                      </p>
+                    </v-row>
+                    <p style="font-size: 17px">
+                      Introdu urmatoarele date despre tine:
+                    </p>
+                    <div>
+                      <v-text-field
+                        label="Nume"
+                        :rules="rules"
+                        hide-details="auto"
+                      ></v-text-field>
+                      <v-text-field
+                        label="Prenume"
+                        :rules="rules"
+                        hide-details="auto"
+                      ></v-text-field>
+                      <v-text-field
+                        label="Numar personal de identificare"
+                        :rules="cnpRules"
+                        hide-details="auto"
+                      ></v-text-field>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-card>
 
               <v-btn color="primary" @click="e1 = 5"> Continuati </v-btn>
             </v-stepper-content>
@@ -205,6 +240,16 @@ export default {
     menu: false,
     modal: false,
     menu2: false,
+    rules: [
+        value => !!value || 'Required.',
+        value => (value && value.length >= 3) || 'Min 3 characters',
+      ],
+    cnpRules: [
+        value => typeof(value) == Number || "CNP invalid",
+        value => !!value || 'Required.',
+        value => (value && value.length == 13) || 'CNP invalid',
+        
+    ]
   }),
   methods: {
     goBack() {
