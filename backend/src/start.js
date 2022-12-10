@@ -320,14 +320,89 @@ async function get_id(name, firstname, location) {
 
 async function delete_by_id(id) {
 	console.log(id);
+	if (id == null)
+		return false;
 	let got_id = await collectionAppo.findOne({"_id": new ObjectId(id)});
 	console.log(got_id);
+	if (got_id === null)
+		return false;
 	collectionAppo.remove(got_id);
+	return true;
 }
 
 app.get("/appointmentsDel/:id", (request, response) => {
-	delete_by_id(request.params.id);
-	response.status(200).send();
+	if (!delete_by_id(request.params.id)) {
+	response.send(`
+		<head>
+		<style>
+		body {
+
+		   color: black;
+		   }
+
+		p {
+			font-size: 16px;
+		}
+
+		   .logo { 
+		   margin: 0 auto;
+		   width: 100px; 
+		   border-radius: 8%;
+		   }
+
+		.imag { 
+			margin: 0 auto;
+			width: 400px; 
+		border-radius: 2%;
+			outline: solid 2px #333; /* This will add a solid, 2px-wide, #333-colored outline to the image */
+		}
+		</style>
+		</head>
+
+		<body>
+		<p><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F2performant.com%2Fblog%2Fwp-content%2Fuploads%2F2015%2F09%2Flogo-BCR-high-resolution-1980x1080.jpg&amp;f=1&amp;nofb=1&amp;ipt=0f6e768d9e50f49052056a6b52c4fa116333346bb228d54926c937cb346818ff&amp;ipo=images" class="logo"></p>
+		<p>Programarea ta nu a fost găsită.</p>
+		<p>Cu drag,</p>
+		<p>Echipa BCR</p>
+		</body>
+		`);
+
+	}
+	response.send(`
+		<head>
+		<style>
+		body {
+
+		   color: black;
+		   }
+
+		p {
+			font-size: 16px;
+		}
+
+		   .logo { 
+		   margin: 0 auto;
+		   width: 100px; 
+		   border-radius: 8%;
+		   }
+
+		.imag { 
+			margin: 0 auto;
+			width: 400px; 
+		border-radius: 2%;
+			outline: solid 2px #333; /* This will add a solid, 2px-wide, #333-colored outline to the image */
+		}
+		</style>
+		</head>
+
+		<body>
+		<p><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F2performant.com%2Fblog%2Fwp-content%2Fuploads%2F2015%2F09%2Flogo-BCR-high-resolution-1980x1080.jpg&amp;f=1&amp;nofb=1&amp;ipt=0f6e768d9e50f49052056a6b52c4fa116333346bb228d54926c937cb346818ff&amp;ipo=images" class="logo"></p>
+		<p>Programarea ta a fost anulată, mulțumim.</p>
+		<p>Cu drag,</p>
+		<p>Echipa BCR</p>
+		</body>
+		`);
+	//response.status(200).send();
 });
 
 app.post("/appointmentsCancel", (request, response) => {
