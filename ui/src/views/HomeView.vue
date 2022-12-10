@@ -260,6 +260,7 @@ export default {
     },
     nextStep() {
       this.e1++;
+    },
     mouseEnter(month) {
       this.$set(this.done, 1, true);
       this.mouseMonth = month;
