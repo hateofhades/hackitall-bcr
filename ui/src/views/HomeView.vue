@@ -95,7 +95,6 @@
                   </v-list>
                 </v-list-item-group>
               </v-card>
-
               <v-btn color="primary" @click="e1 = 2"> Continuati </v-btn>
             </v-stepper-content>
 
