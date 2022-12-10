@@ -1,5 +1,4 @@
 <template>
-
   <v-app-bar class="flex-grow-0" color="#AAE1FA" rounded >
     <v-btn icon
     class="mx-2"
@@ -14,13 +13,17 @@
     <img class="mr-3" :src="require('../../public/img/logo-BCR-high-resolution-1980x1080-1140x560.jpg')" height="40"/>
     <v-spacer></v-spacer>
   </v-app-bar>
-
 </template>
 
 
 <script>
+  import MapComp from "../components/Map.vue";
+
   export default {
     name: 'HomeView',
+    components: {
+      MapComp
+    },
     data: () => ({
       title: 'Programare vizita sucursala',
     }),
