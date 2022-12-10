@@ -37,11 +37,7 @@ export default {
         search: "",
         displayBranches: []
     }),
-    props: {
-        // eslint-disable-next-line
-        step: String | Number,
-        settings: Array | Object,
-    },
+    props: ['step', 'settings'],
     methods: {
         async getBranches() {
             const branchesRequest = await fetch('http://localhost:5001/branches');
