@@ -106,6 +106,9 @@ export default {
             return d;
         },
         displayDistance(lat1, lon1) {
+            if (!this.userLocation.lat)
+                return "";
+                
             const distance = this.getDistanceFromLatLonInKm(lat1, lon1, this.userLocation.lat, this.userLocation.lng);
 
             if (distance < 1) {
