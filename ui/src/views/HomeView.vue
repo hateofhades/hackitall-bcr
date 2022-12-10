@@ -1,15 +1,15 @@
 <template>
-  <hello-world />
+  <v-app-bar elevation="4" color="#ACD1E8">
+    <v-icon class="mr-4">fa-backward</v-icon>
+    <v-app-title>{{title}}</v-app-title>
+  </v-app-bar>
 </template>
 
 <script>
-  import HelloWorld from '../components/HelloWorld'
-
   export default {
     name: 'HomeView',
-
-    components: {
-      HelloWorld,
-    },
+    data: () => ({
+      title: 'Programare vizita sucursala',
+    }),
   }
 </script>
