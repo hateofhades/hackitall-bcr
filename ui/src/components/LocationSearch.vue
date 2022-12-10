@@ -7,6 +7,8 @@
             <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                 <v-btn color="#1967D2" style="color:white" @click="goToMap"><v-icon class="mr-2">mdi-map</v-icon> Cauta
                     pe harta</v-btn>
+                <v-text-field v-model="landmarkSearch" append-icon="mdi-magnify" label="Cauta dupa un reper" single-line
+                    hide-details></v-text-field>
                 <v-text-field v-model="search" append-icon="mdi-magnify" label="Cauta unitatea BCR" single-line
                     hide-details></v-text-field>
                 <v-card v-for="branch in displayBranches" v-bind:key="branch.name" class="mt-4">
@@ -35,7 +37,9 @@ export default {
         branches: [],
         userLocation: {},
         search: "",
-        displayBranches: []
+        displayBranches: [],
+        landmarkSearch: "",
+        landmarkLocation: {}
     }),
     props: ['step', 'settings'],
     methods: {
@@ -78,11 +82,19 @@ export default {
         deg2rad(deg) {
             return deg * (Math.PI / 180)
         },
-        displayDistance(lat1, lon1) {
-            if (!this.userLocation.lat)
+        displayDistance(lat1, lon1, lat2 = null, lon2 = null) {
+            if (this.landmarkSearch == "" && !this.userLocation.lat)
                 return "";
 
-            const distance = this.getDistanceFromLatLonInKm(lat1, lon1, this.userLocation.lat, this.userLocation.lng);
+            let distance;
+
+            if (this.landmarkSearch == "") 
+                distance = this.getDistanceFromLatLonInKm(lat1, lon1, this.userLocation.lat, this.userLocation.lng);
+            else
+                distance = this.getDistanceFromLatLonInKm(lat1, lon1, this.landmarkLocation.lat, this.landmarkLocation.lng);
+
+            if (isNaN(distance))
+                return "";
 
             if (distance < 1) {
                 return (distance * 1000).toFixed(0) + " m";
@@ -110,6 +122,8 @@ export default {
                 this.getUserLocation();
         },
         search(newSearch) {
+            this.landmarkSearch = "";
+
             if (newSearch == "")
                 return this.getUserLocation();
 
@@ -118,6 +132,27 @@ export default {
                     branch.address.toLowerCase().includes(this.search.toLowerCase()) ||
                     branch.city.toLowerCase().includes(this.search.toLowerCase());
             });
+        },
+        async landmarkSearch(newSearch) {
+            this.search = "";
+
+            if (newSearch == "")
+                return this.getUserLocation();
+
+            const landmarkQuery = await fetch(`http://localhost:5001/getlandmark?search=${newSearch}`);
+            const landmarkJson = await landmarkQuery.json();
+            if(landmarkJson.candidates.length == 0)
+                return;
+
+            const landmark = landmarkJson.candidates[0];
+            this.landmarkLocation = landmark.geometry.location;
+            this.displayBranches = this.branches;
+            this.displayBranches.sort((a, b) => {
+                const aDistance = this.getDistanceFromLatLonInKm(landmark.geometry.location.lat, landmark.geometry.location.lng, a.location.latitude, a.location.longitude);
+                const bDistance = this.getDistanceFromLatLonInKm(landmark.geometry.location.lat, landmark.geometry.location.lng, b.location.latitude, b.location.longitude);
+                return aDistance > bDistance;
+            });
+            this.displayBranches = this.displayBranches.slice(0, 3);
         }
     }
 };

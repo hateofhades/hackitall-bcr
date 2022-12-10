@@ -31,7 +31,7 @@ app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
 app.use(cors(
 	{
-		origin: 'http://localhost:8082'
+		origin: 'http://localhost:8080'
 	}
 ));
 var database, collection, collectionAppo;
@@ -418,7 +418,7 @@ app.get("/getlandmark", async (request, response) => {
 	let url =`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${request.query.search}&key=AIzaSyCftc-FGZMnkDhWCMZgNENW9bF9EF8RhRY&inputtype=textquery&fields=geometry`;
 	const res = await axios({
 		url,
-		method: 'GET',
+		method: 'GET'
 	});
 
 	response.json(res.data);
