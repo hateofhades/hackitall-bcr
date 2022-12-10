@@ -137,12 +137,56 @@
                         <v-btn
                           text
                           color="primary"
-                          @click="$refs.dialog.save(date)"
+                          @click="
+                            $refs.dialog.save(date);
+                            usedDate = true;
+                          "
                         >
                           OK
                         </v-btn>
                       </v-date-picker>
                     </v-dialog>
+
+                    <v-list-item-group
+                      v-model="settings"
+                      multiple
+                      active-class=""
+                      dense
+                    >
+                      <v-list
+                        rounded
+                        class="ma-0"
+                        style="
+                          max-width: 100%;
+                          white-space: normal;
+                          word-wrap: break-word;
+                        "
+                      >
+                        <v-list-item
+                          v-for="ora in ore"
+                          v-bind:key="ora.name"
+                          :value="ora"
+                        >
+                          <template v-slot:default="{ active }">
+                            <v-list-item-content v-if="usedDate">
+                              <v-list-item-title
+                                style="word-wrap: break-word"
+                                >{{ ora.name }}</v-list-item-title
+                              >
+                            </v-list-item-content>
+                            <v-list-item-action>
+                              <v-checkbox
+                                :hidden="true"
+                                :input-value="active"
+                                off-icon=" "
+                                on-icon="mdi-check-decagram"
+                                color="green"
+                              ></v-checkbox>
+                            </v-list-item-action>
+                          </template>
+                        </v-list-item>
+                      </v-list>
+                    </v-list-item-group>
                   </v-col>
                 </v-row>
               </v-card>
@@ -179,6 +223,7 @@ export default {
   data: () => ({
     title: "Programare vizita sucursala",
     e1: 1,
+    usedDate: false,
     optiuni: [
       {
         name: "Depunere sau retragere bani",
@@ -214,12 +259,22 @@ export default {
         name: "Economisire",
       },
     ],
+    ore: [
+      {
+        name: "13:00",
+      },
+      {
+        name: "13:30",
+      },
+    ],
     settings: {},
     windowWidth: window.innerWidth,
-    date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-      menu: false,
-      modal: false,
-      menu2: false,
+    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
+    menu: false,
+    modal: false,
+    menu2: false,
   }),
   methods: {
     goBack() {
