@@ -25,7 +25,7 @@
     </v-app-bar>
 
     <v-row justify="center">
-      <v-col :cols="windowWidth < 700?'12':'8'">
+      <v-col :cols="windowWidth < 700 ? '12' : '8'">
         <v-stepper v-model="e1" class="mt-4" elevation="4">
           <v-stepper-header>
             <v-stepper-step :complete="e1 > 1" step="1">
@@ -41,7 +41,7 @@
             <v-divider></v-divider>
 
             <v-stepper-step :complete="e1 > 3" step="3">
-              Alege ziua si data
+              Alege ziua si ora
             </v-stepper-step>
 
             <v-divider></v-divider>
@@ -52,15 +52,18 @@
 
             <v-divider></v-divider>
 
-            <v-stepper-step step="5">
-              Sumarul programarii
-            </v-stepper-step>
+            <v-stepper-step step="5"> Sumarul programarii </v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-items>
             <v-stepper-content step="1">
               <v-card elevation="0">
-                <v-list-item-group v-model="settings" multiple active-class="" dense>
+                <v-list-item-group
+                  v-model="settings"
+                  multiple
+                  active-class=""
+                  dense
+                >
                   <v-list
                     rounded
                     class="ma-0"
@@ -97,6 +100,7 @@
               </v-card>
               <v-btn color="primary" @click="e1 = 2"> Continuati </v-btn>
             </v-stepper-content>
+            <LocationSearch />
 
             <v-stepper-content step="2">
               <v-card class="mb-12" height="200px" elevation="0"></v-card>
@@ -105,7 +109,43 @@
             </v-stepper-content>
 
             <v-stepper-content step="3">
-              <v-card class="mb-12" height="200px" elevation="0"></v-card>
+              <v-card elevation="0">
+                <v-row justify="center">
+                  <v-col cols="12" sm="6" md="4">
+                    <v-dialog
+                      ref="dialog"
+                      v-model="modal"
+                      :return-value.sync="date"
+                      persistent
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="date"
+                          label="Alege o data"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="date" scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="modal = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.dialog.save(date)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-dialog>
+                  </v-col>
+                </v-row>
+              </v-card>
 
               <v-btn color="primary" @click="e1 = 4"> Continuati </v-btn>
             </v-stepper-content>
@@ -129,8 +169,13 @@
 </template>
 
 <script>
+import LocationSearch from "../components/LocationSearch.vue";
+
 export default {
   name: "HomeView",
+  components: {
+    LocationSearch,
+  },
   data: () => ({
     title: "Programare vizita sucursala",
     e1: 1,
@@ -170,7 +215,11 @@ export default {
       },
     ],
     settings: {},
-    windowWidth: window.innerWidth
+    windowWidth: window.innerWidth,
+    date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      menu: false,
+      modal: false,
+      menu2: false,
   }),
   methods: {
     goBack() {
@@ -179,7 +228,14 @@ export default {
     },
     onResize() {
       this.windowWidth = window.innerWidth;
-    }
+    },
+    mouseEnter(month) {
+      this.$set(this.done, 1, true);
+      this.mouseMonth = month;
+    },
+    mouseLeave() {
+      this.mouseMonth = null;
+    },
   },
   watch: {
     settings(newSettings) {
@@ -191,8 +247,8 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      window.addEventListener('resize', this.onResize)
+      window.addEventListener("resize", this.onResize);
     });
-  }
+  },
 };
 </script>
