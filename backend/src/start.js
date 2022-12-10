@@ -419,7 +419,6 @@ app.get("/getlandmark", async (request, response) => {
 	const res = await axios({
 		url,
 		method: 'GET',
-		responseType: 'stream'
 	});
 
 	response.json(res.data);
