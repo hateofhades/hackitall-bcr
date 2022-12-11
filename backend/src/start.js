@@ -41,9 +41,10 @@ function getIcalObjectInstance(starttime, location, url, rejectUrl)
 	const cal = ical({ domain: "bcr.com",
 		name: '[BCR] - Programare ' + location });
 	//cal.domain("mytestwebsite.com");
+	let arr = starttime.split("-");
 	cal.createEvent({
-		start: new Date(starttime),         // eg : moment()
-		end: new Date(new Date(starttime).getTime() + 30*60000),
+		start: new Date(arr[0], arr[1], arr[2], arr[3].split(":")[0], arr[3].split(":")[1]),         // eg : moment()
+		end: new Date(arr[0], arr[1], arr[2], arr[3].split(":")[0], arr[3].split(":")[1]),         // eg : moment()
 		summary: `Programare BCR ` + location,
 		description: ` Pentru a anula programarea, accesați următorul link: ` + rejectUrl,         // 'Summary of your event'
 		location: location,       // 'Delhi'
@@ -234,7 +235,7 @@ async function sendMail(request) {
 		    }]
 	}
 
-	//console.log(request['start_time'])
+	console.log("START TIME" + request.body)
 	let calendarObj = getIcalObjectInstance(request.body['starttime'],
 		request.body['location'], null, delUrl);
 
@@ -257,6 +258,7 @@ async function sendMail(request) {
 }
 
 app.post("/appointmentsAdd", (request, response) => {
+	console.log(request.body);
     let insert_rc = collectionAppo.insert(request.body, (error, result) => {
 	if(error) {
 	    return response.status(500).send(error);
@@ -289,7 +291,6 @@ async function get_app_by_name(request) {
 		entry['lastname'] == request.body['lastname'] &&
 		entry['email'] == request.body['email'] && 
 		entry['starttime'] == request.body['starttime'] &&
-		entry['endtime'] == request.body['endtime'] &&
 		entry['location'] == request.body['location']) {
 
 			let id = entry['_id'];
