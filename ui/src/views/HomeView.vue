@@ -440,6 +440,11 @@ export default {
       this.mouseMonth = null;
     },
     allowDates(val) {
+      // const dayT = new Date(val).toISOString();
+      // const todayT = new Date().toISOString();
+
+      // if (dayT < todayT) return false;
+
       const day = new Date(val).toLocaleDateString("en-US", {
         weekday: "long",
       });
@@ -467,11 +472,12 @@ export default {
         location: this.selectedBranch.address,
         latitude: this.selectedBranch.location.latitude,
         longitude: this.selectedBranch.location.longitude,
+        branchID: this.selectedBranch.name
       };
 
       await fetch("http://localhost:5001/appointmentsAdd", {headers: {'Content-Type': 'application/json'}, method: "POST", body: JSON.stringify(data)});
 
-      this.$router.push("/success");
+      this.$router.push("/done");
     }
   },
   watch: {
@@ -481,7 +487,7 @@ export default {
         this.settings.push(newSettings[1]);
       }
     },
-    e1() {
+    async e1() {
       this.selectedBranch = JSON.parse(localStorage.getItem("chosenBranch"));
 
       if (this.selectedBranch) {
@@ -554,6 +560,23 @@ export default {
     ex7() {
       this.isValidCheck();
     },
+    async date() {
+      const selectedBranchAppointments = await fetch(`http://localhost:5001/appointmentsByDate/${this.selectedBranch.name}/${this.date}`);
+      const appointmentsJson = await selectedBranchAppointments.json();
+
+      console.log(appointmentsJson);
+
+      for(let appointment of appointmentsJson) {
+        const hourMin = appointment.starttime.split("-")[3];
+
+        this.ore = this.ore.filter((el) => {
+          if (el.name == hourMin) return false;
+          return true;
+        });
+      }
+
+      console.log(this.ore);
+    }
   },
   mounted() {
     if (this.$route.query.step) {
