@@ -270,6 +270,8 @@ usedDate = true;
                         v-model="cnp"></v-text-field>
                       <v-text-field label="Email" :rules="emailRules" hide-details="auto"
                         v-model="email"></v-text-field>
+                      <v-text-field label="Numar telefon" :rules="telRules" hide-details="auto"
+                        v-model="tel"></v-text-field>
                     </div>
 
                     <v-radio-group v-model="ex7" column>
@@ -309,7 +311,7 @@ usedDate = true;
             </v-stepper-content>
             <v-stepper-content step="5">
               <AppointmentSummary v-if="e1 == 5" :nume="nume" :prenume="prenume" :settings="settings"
-              :branch="selectedBranch" :date="date" :time="oraSelect" :email="email" :cnp="cnp" />
+              :branch="selectedBranch" :date="date" :time="oraSelect" :email="email" :cnp="cnp" :tel="tel" />
               <v-btn color="primary" @click="doProgramming"> Programeaza-te</v-btn>
             </v-stepper-content>
           </v-stepper-items>
@@ -335,6 +337,7 @@ export default {
     dialog: false,
     snackbar: false,
     cnp: "",
+    tel: "",
     nume: "",
     prenume: "",
     email: "",
@@ -415,6 +418,10 @@ export default {
       (value) => !!value || "Required.",
       (value) => validCNP(value) || "CNP invalid",
     ],
+    telRules: [
+      (value) => !!value || "Required.",
+      (value) => validTEL(value) || "Nr invalid",
+    ],
     emailRules: [
       (value) =>
         /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
@@ -461,6 +468,7 @@ export default {
       if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(this.email))
         this.isValidNext = false;
       if (!validCNP(this.cnp)) this.isValidNext = false;
+      if (!validTEL(this.tel)) {console.log(this.tel); this.isValidNext = false;}
       if (!this.isCheck) this.isValidNext = false;
     },
     async doProgramming() {
@@ -554,6 +562,9 @@ export default {
     email() {
       this.isValidCheck();
     },
+    tel() {
+      this.isValidCheck();
+    },
     isCheck() {
       this.isValidCheck();
     },
@@ -614,5 +625,20 @@ function validCNP(p_cnp) {
     hashResult = 1;
   }
   return cnp[12] == hashResult;
+}
+function validTEL(p_cnp) {
+  var i = 0,
+    cnp = [];
+  if (p_cnp.length !== 10) {
+    return false;
+  }
+  if (parseInt(p_cnp.charAt(0)) != 0 ||parseInt(p_cnp.charAt(1)) != 7)
+  for (i = 0; i < 13; i++) {
+    cnp[i] = parseInt(p_cnp.charAt(i), 10);
+    if (isNaN(cnp[i])) {
+      return false;
+    }
+  }
+	return true;
 }
 </script>
