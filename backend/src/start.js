@@ -346,6 +346,28 @@ app.post("/appointmentsCancel", (request, response) => {
 	response.status(200).send();
 });
 
+app.get("/appointmentsByDate/:branchId/:date", (request, response) => {
+	collectionAppo.find({
+		branchID: request.params.branchId,
+	}).toArray((error, result) => {
+		if(error) {
+			return response.status(500);
+		} else {
+			let reservations = [];
+			for(let branch of result) {
+				const startTime = branch.starttime.split("-");
+				const date = startTime[0] + "-" + startTime[1] + "-" + startTime[2];
+
+				if(date == request.params.date) {
+					reservations.push(branch);
+				}
+			}
+
+			response.status(200).json(reservations);
+		}
+	});
+});
+
 app.get("/getlandmark", async (request, response) => {
 	let url =`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${request.query.search}&key=AIzaSyCftc-FGZMnkDhWCMZgNENW9bF9EF8RhRY&inputtype=textquery&fields=geometry`;
 	const res = await axios({

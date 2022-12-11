@@ -440,10 +440,10 @@ export default {
       this.mouseMonth = null;
     },
     allowDates(val) {
-      // const dayT = new Date(val).toISOString();
-      // const todayT = new Date().toISOString();
+      const dayT = new Date(val).toISOString();
+      const todayT = new Date().toISOString();
 
-      // if (dayT < todayT) return false;
+      if (dayT < todayT) return false;
 
       const day = new Date(val).toLocaleDateString("en-US", {
         weekday: "long",
