@@ -36,16 +36,16 @@ app.use(cors(
 ));
 var database, collection, collectionAppo;
 
-function getIcalObjectInstance(starttime, endtime, location, url)
+function getIcalObjectInstance(starttime, location, url, rejectUrl)
 {
 	const cal = ical({ domain: "bcr.com",
-		name: 'Programare BCR' });
+		name: '[BCR] - Programare ' + location });
 	//cal.domain("mytestwebsite.com");
 	cal.createEvent({
 		start: new Date(starttime),         // eg : moment()
-		end: new Date(endtime),             // eg : moment(1,'days')
-		summary: "Programare BCR",         // 'Summary of your event'
-		description: "", // 'More description'
+		end: new Date(new Date(starttime).getTime() + 30*60000),
+		summary: `Programare BCR ` + location,
+		description: ` Pentru a anula programarea, accesați următorul link: ` + rejectUrl,         // 'Summary of your event'
 		location: location,       // 'Delhi'
 		//url: url,                 // 'event url'
 		organizer: {              // 'organizer details'
@@ -171,7 +171,7 @@ async function sendMail(request) {
 
 	mailOptions = {
 		to: request.body['email'],
-		subject: "Programare BCR " + request.body['location'], // Subject line
+		subject: "[BCR] - Programare " + request.body['location'], // Subject line
 		text: `
 		Bună, ` + request.body['firstname'] + `.\n
 		Programarea ta la ` + request.body['location'] + ` a fost confirmată
@@ -235,8 +235,8 @@ async function sendMail(request) {
 	}
 
 	//console.log(request['start_time'])
-	let calendarObj = getIcalObjectInstance(request.body['starttime'], request.body['endtime'],
-		request.body['location'], null);
+	let calendarObj = getIcalObjectInstance(request.body['starttime'],
+		request.body['location'], null, delUrl);
 
 	let alternatives = {
 		"Content-Type": "text/calendar",
