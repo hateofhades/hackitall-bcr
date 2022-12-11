@@ -6,6 +6,7 @@ import TermsAndConditions from '../components/TermsAndConditions.vue'
 import CanceledAppointment from '../components/Canceled.vue'
 import DoneAppoinment from '../components/DoneAppointment.vue'
 
+
 Vue.use(VueRouter)
 
 const routes = [
