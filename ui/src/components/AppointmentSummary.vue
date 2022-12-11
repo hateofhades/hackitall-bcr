@@ -39,13 +39,16 @@
         <v-row justify="center">
             CNP: {{cnp}}
         </v-row>
+        <v-row justify="center">
+            Telefon: {{tel}}
+        </v-row>
     </v-container>
 </template>
 
 <script>
 export default {
     name: "AppointmentSummary",
-    props: ['nume', 'prenume', 'settings', 'branch', 'date', 'time', 'email', 'cnp'],
+    props: ['nume', 'prenume', 'settings', 'branch', 'date', 'time', 'email', 'cnp', 'tel'],
     methods: {
         updateToken(payload) {
             this.googleToken = payload.response_token;
