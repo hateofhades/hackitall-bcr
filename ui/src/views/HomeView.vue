@@ -91,8 +91,8 @@
                           Cancel
                         </v-btn>
                         <v-btn text color="primary" @click="
-                          $refs.dialog.save(date);
-                        usedDate = true;
+  $refs.dialog.save(date);
+usedDate = true;
                         ">
                           OK
                         </v-btn>
@@ -145,7 +145,8 @@
                       <v-text-field label="Prenume" :rules="rules" hide-details="auto" v-model="prenume"></v-text-field>
                       <v-text-field label="Numar personal de identificare" :rules="cnpRules" hide-details="auto"
                         v-model="cnp"></v-text-field>
-                      <v-text-field label="Email" :rules="emailRules" hide-details="auto" v-model="email"></v-text-field>
+                      <v-text-field label="Email" :rules="emailRules" hide-details="auto"
+                        v-model="email"></v-text-field>
                     </div>
 
                     <v-radio-group v-model="ex7" column>
@@ -169,11 +170,10 @@
                 Continuati
               </v-btn>
             </v-stepper-content>
-
             <v-stepper-content step="5">
-              <v-card class="mb-12" height="200px" elevation="0"></v-card>
-
-              <v-btn color="primary" @click="e1 = 1"> Finalizati </v-btn>
+              <AppointmentSummary v-if="e1 == 5" :nume="nume" :prenume="prenume" :settings="settings"
+              :branch="selectedBranch" :date="date" :time="oraSelect" :email="email" :cnp="cnp" />
+              <v-btn color="primary" @click="doProgramming"> Programeaza-te</v-btn>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
@@ -184,11 +184,13 @@
 
 <script>
 import LocationSearch from "../components/LocationSearch.vue";
+import AppointmentSummary from "../components/AppointmentSummary.vue";
 
 export default {
   name: "HomeView",
   components: {
     LocationSearch,
+    AppointmentSummary,
   },
   data: () => ({
     title: "Programare vizita sucursala",
@@ -302,6 +304,20 @@ export default {
       if (this.prenume.length < 3) this.isValidNext = false;
       if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) this.isValidNext = false;
       if (!validCNP(this.cnp)) this.isValidNext = false;
+      if (!this.isCheck) this.isValidNext = false;
+    },
+    async doProgramming() {
+      const data = {
+        firstname: this.prenume,
+        lastname: this.nume,
+        email: this.email,
+        starttime: this.date + " " + this.oraSelect[0].name,
+        location: this.selectedBranch.address,
+        latitude: this.selectedBranch.location.latitude,
+        longitude: this.selectedBranch.location.longitude,
+      };
+
+      await fetch({url: "http://localhost:5001/appointmentsAdd", method: "POST", body: JSON.stringify(data)});
     }
   },
   watch: {
