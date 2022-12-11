@@ -124,8 +124,8 @@ async function getMapsImage(request) {
 		//});
 	let random = Str.random() 
 
-	let rand = Str.random(5)
-	let filepath = "/tmp/" + rand;
+	let rand = "img.png";//= Str.random(5)
+	let filepath = "./" + rand;
 	const writer = fs.createWriteStream(filepath)
 	const response = await axios({
 		url,
