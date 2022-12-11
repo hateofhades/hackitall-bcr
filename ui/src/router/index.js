@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import MapComp from '../components/Map.vue'
 import TermsAndConditions from '../components/TermsAndConditions.vue'
+import CanceledAppointment from '../components/Canceled.vue'
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/termsandc',
     name: 'tc',
     component: TermsAndConditions
+  },
+  {
+    path: '/canceled',
+    name: 'tc',
+    component: CanceledAppointment
   }
 ]
 
