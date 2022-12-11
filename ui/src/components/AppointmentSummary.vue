@@ -22,7 +22,7 @@
             Adresa: {{ branch.address }}
         </v-row>
         <v-row justify="center" class="mt-8">
-            Data si ora
+            <b>Data si ora</b>
         </v-row>
         <v-row justify="center">
             {{ date }} - {{ time[0].name }}
