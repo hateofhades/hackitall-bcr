@@ -469,7 +469,7 @@ export default {
         longitude: this.selectedBranch.location.longitude,
       };
 
-      await fetch("http://localhost:5001/appointmentsAdd", {headers: {'Content-Type': 'application-json'}, method: "POST", body: JSON.stringify(data)});
+      await fetch("http://localhost:5001/appointmentsAdd", {headers: {'Content-Type': 'application/json'}, method: "POST", body: JSON.stringify(data)});
 
 
       console.log(data);
